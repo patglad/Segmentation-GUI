@@ -2,3 +2,7 @@ __pycache__/
 *.avi
 *.pth
 *.ui
+*.jpg
+*.png
+data
+output
