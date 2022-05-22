@@ -12,7 +12,7 @@ class VideoWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Display ICSI video")
+        self.setWindowTitle("Display video")
         self.setWindowIcon(QIcon('multimedia.png'))
 
         self.openButton = QPushButton("Open video")
@@ -70,6 +70,34 @@ class VideoWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    style = """
+        QWidget{
+            background: #262D37;
+        }
+        QLabel{
+            color: #fff;
+            font: bold 20px;
+        }
+        QPushButton
+        {
+            color: white;
+            background: #0577a8;
+            border: 1px #DADADA solid;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 12pt;
+            outline: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        QPushButton:hover{
+            border: 1px #C6C6C6 solid;
+            color: #fff;
+            background: #0892D0;
+        }
+    """
+    app.setStyleSheet(style)
     player = VideoWindow()
     player.resize(640, 480)
     player.show()

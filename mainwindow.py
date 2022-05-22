@@ -9,7 +9,7 @@
 import os
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import QPushButton, QLabel
 
 
@@ -22,52 +22,78 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 500)
-        MainWindow.resize(800, 500)
-        MainWindow.setMinimumSize(800, 500)
-        MainWindow.setMaximumSize(800, 500)
+        MainWindow.resize(800, 300)
+        MainWindow.setMinimumSize(750, 400)
+        MainWindow.setMaximumSize(750, 400)
         MainWindow.setWindowTitle("Sperm segmentation analysis")
         MainWindow.setWindowIcon(QIcon('ivf.png'))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         
-        # Main YOLACT button
-        
+        # YOLACT button
         self.yolact_button = QPushButton("YOLACT", self.centralwidget)
         self.yolact_button.setGeometry(50, 250, 251, 101)
         self.yolact_button.setObjectName("yolact")
         self.yolact_button.clicked.connect(self.start_yolact)
 
-        # Main RVOS button
-
+        # RVOS button
         self.rvos_button = QPushButton("RVOS", self.centralwidget)
         self.rvos_button.setGeometry(450, 250, 251, 101)
         self.rvos_button.setObjectName("rvos")
         self.rvos_button.clicked.connect(self.start_rvos)
 
         # Main label - title
-
-        self.label = QLabel("Analysis of the possibility of sperm segmentation on\n"
-"video recordings using machine learning methods", self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(230, 100, 291, 71))
+        self.label = QLabel("Analysis of the possibility of sperm segmentation \non "
+                            "video recordings using machine learning methods", self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(40, 40, 700, 100))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
 
+        # Select network label
+        self.network_label = QLabel("Please select a network:", self.centralwidget)
+        self.network_label.setGeometry(QtCore.QRect(130, 150, 500, 100))
+        self.network_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.network_label.setObjectName("network_label")
 
         MainWindow.setCentralWidget(self.centralwidget)
-        # self.menubar = QMenuBar(MainWindow)
-        # self.menubar.setGeometry(QtCore.QRect(0, 0, 566, 21))
-        # self.menubar.setObjectName("menubar")
-        # MainWindow.setMenuBar(self.menubar)
-        # self.statusbar = QStatusBar(MainWindow)
-        # self.statusbar.setObjectName("statusbar")
-        # MainWindow.setStatusBar(self.statusbar)
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    style = """
+        QWidget{
+            background: #262D37;
+        }
+        QLabel#label{
+            color: #fff;
+            font: bold 20px;
+        }
+        QLabel#network_label{
+            color: #fff;
+            font: 15px;
+        }
+        QPushButton
+        {
+            color: white;
+            background: #0577a8;
+            border: 1px #DADADA solid;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 12pt;
+            outline: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        QPushButton:hover{
+            border: 1px #C6C6C6 solid;
+            color: #fff;
+            background: #0892D0;
+        }
+    """
+    app.setStyleSheet(style)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
