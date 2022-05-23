@@ -35,9 +35,11 @@ class Ui_YolactWindow(QMainWindow):
         url = QUrl.fromLocalFile(video_path)
         print("Video: ", url.fileName())
         self.videopath_label.setText('Video: ' + os.path.basename(video_path))
-        self.video = os.path.basename(video_path)
-        self.video_output = os.path.basename(video_path).split(".")[0] + "_output." + os.path.basename(video_path).split(".")[1]
-        shutil.copy(video_path, "D:/yolact/{}".format(os.path.basename(video_path)))
+        shutil.copy(video_path, "D:/yolact/data/{}".format(os.path.basename(video_path)))
+        output_path = "D:/yolact/data/output"
+        os.makedirs(output_path, exist_ok=True)
+        self.video = "data/" + os.path.basename(video_path)
+        self.video_output = "data/output/" + os.path.basename(video_path)
         self.segmentation.setDisabled(False)
         return video_path
 
@@ -47,10 +49,11 @@ class Ui_YolactWindow(QMainWindow):
             url_input = QUrl.fromLocalFile(input_image)
             print("Input image: ", url_input.fileName())
             self.imagepath_label.setText("Image: " + os.path.basename(input_image))
-            # TODO. copy selected file to D:/yolact and get only short path in D:/yolact directory e.f. data/video.avi
             shutil.copy(input_image, "D:/yolact/data/{}".format(os.path.basename(input_image)))
+            output_path = "D:/yolact/data/output"
+            os.makedirs(output_path, exist_ok=True)
             self.input_image = "data/" + os.path.basename(input_image)
-            self.output_image = "data/output/" + os.path.basename(input_image).split(".")[0] + "_output." + os.path.basename(input_image).split(".")[1]
+            self.output_image = "data/output/" + os.path.basename(input_image)
             self.segmentation.setDisabled(False)
             return input_image
         else:
@@ -58,7 +61,8 @@ class Ui_YolactWindow(QMainWindow):
             url_input = QUrl.fromLocalFile(images_input_path)
             print("Input images: ", url_input.fileName())
             self.imagepath_label.setText("Images: " + os.path.basename(images_input_path))
-            shutil.copytree(images_input_path, "D:/yolact/data/{}".format(os.path.basename(images_input_path)))
+            if not os.path.exists("D:/yolact/data/{}".format(os.path.basename(images_input_path))):
+                shutil.copytree(images_input_path, "D:/yolact/data/{}".format(os.path.basename(images_input_path)))
             output_path = os.path.join("D:/yolact/data/output", os.path.basename(images_input_path))
             os.makedirs(output_path, exist_ok=True)
             self.images_input_path = "data/" + os.path.basename(images_input_path)

@@ -55,3 +55,12 @@ def yolact_images_segmentation(images_input_path, images_output_path, model, sco
         print("Something went wrong...")
     return ret_code
 
+
+def rvos_one_shot_segmentation(model_name, frames_path, init_mask_label):
+    print("One shot segmentation")
+    pass
+
+
+def rvos_zero_shot_segmentation(model_name, frames_path):
+    print("Zero shot segmentation")
+    pass

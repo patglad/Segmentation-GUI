@@ -11,7 +11,9 @@ import os
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QLabel, QPushButton, QRadioButton, QMenuBar, QMenu, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QLabel, QPushButton, QRadioButton, QMenuBar, QMenu, QMainWindow, QFileDialog, QMessageBox
+
+from gui.gui_utils import rvos_one_shot_segmentation, rvos_zero_shot_segmentation
 
 
 class Ui_RvosWindow(QMainWindow):
@@ -19,20 +21,20 @@ class Ui_RvosWindow(QMainWindow):
         os.system('python videowindow.py')
 
     def choose_model(self):
-        model_path, _ = QFileDialog.getOpenFileName(self, 'Choose a model file', '', 'Model files | *.pth;')
-        url = QUrl.fromLocalFile(model_path)
+        model_directory = QFileDialog.getExistingDirectory(self, 'Choose a model directory')
+        url = QUrl.fromLocalFile(model_directory)
         print("Selected model: ", url.fileName())
-        model_name = os.path.basename(model_path)
+        model_name = os.path.basename(model_directory)
         self.modelpath_label.setText('Model: ' + model_name)
-        self.model_path = model_path
         self.model_name = model_name
-        return model_path
+        return model_name
 
     def upload_frames(self):
         frames_path = QFileDialog.getExistingDirectory(self, 'Choose an input folder')
         url_input = QUrl.fromLocalFile(frames_path)
         print("Selected frames: ", url_input.fileName())
         self.frames_label.setText("Frames: " + os.path.basename(frames_path))
+        self.frames_path = frames_path
         self.start_segmentation.setDisabled(False)
         return frames_path
 
@@ -45,15 +47,6 @@ class Ui_RvosWindow(QMainWindow):
         self.mask_path_label.show()
         return mask_path
 
-    def choose_video(self):
-        video_path, _ = QFileDialog.getOpenFileName(self, 'Choose a video file', '', 'Video files | *.avi;')
-        url = QUrl.fromLocalFile(video_path)
-        print("Selected video: ", url.fileName())
-        self.videopath_label.setText('Video: ' + video_path)
-        self.video_path = "125_16s.avi"
-        self.video_output = "125_16s_output.avi"
-        return video_path
-
     def radio_zeroshot_clicked(self):
         self.mask_path_label.hide()
         self.init_mask_button.hide()
@@ -62,11 +55,18 @@ class Ui_RvosWindow(QMainWindow):
         self.mask_path_label.show()
         self.init_mask_button.show()
 
+    def rvos_segmentation(self):
+        if self.radio_oneshot.isChecked() and self.model_name and self.frames_path and self.mask_path:
+            rvos_one_shot_segmentation(self.model_name, self.frames_path, self.init_mask_label)
+        elif self.radio_zeroshot.isChecked() and self.model_name and self.frames_label:
+            rvos_zero_shot_segmentation(self.model_name, self.frames_path)
+        else:
+            QMessageBox.warning(self, 'Warning', 'Model or data not specified', QMessageBox.Ok)
+
     def setupUi(self, RvosWindow):
-        self.model_path = ""
-        self.video_path = ""
-        self.video_output = ""
         self.model_name = ""
+        self.frames_path = ""
+        self.mask_path = ""
 
         RvosWindow.setObjectName("RvosWindow")
         RvosWindow.resize(600, 400)
@@ -130,6 +130,7 @@ class Ui_RvosWindow(QMainWindow):
         self.start_segmentation = QPushButton("Start segmentation", self.centralwidget)
         self.start_segmentation.setGeometry(350, 170, 250, 41)
         self.start_segmentation.setObjectName("start_segmentation")
+        self.start_segmentation.clicked.connect(self.rvos_segmentation)
         self.start_segmentation.setDisabled(True)
 
         # Visualisation
