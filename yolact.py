@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QPushButton, QLabel, QRadioButton, QMenuBar, QMenu, 
     QMainWindow, QMessageBox, QLineEdit
 
 from gui_utils import yolact_video_segmentation, yolact_single_image_segmentation, yolact_images_segmentation
+import shutil
 
 
 class Ui_YolactWindow(QMainWindow):
@@ -32,10 +33,11 @@ class Ui_YolactWindow(QMainWindow):
     def choose_video(self):
         video_path, _ = QFileDialog.getOpenFileName(self, 'Choose a video file', '', 'Video files | *.avi;')
         url = QUrl.fromLocalFile(video_path)
-        print("Selected video: ", url.fileName())
+        print("Video: ", url.fileName())
         self.videopath_label.setText('Video: ' + os.path.basename(video_path))
-        self.video = "125_16s.avi"
-        self.video_output = "125_16s_output.avi"
+        self.video = os.path.basename(video_path)
+        self.video_output = os.path.basename(video_path).split(".")[0] + "_output." + os.path.basename(video_path).split(".")[1]
+        shutil.copy(video_path, "D:/yolact/{}".format(os.path.basename(video_path)))
         self.segmentation.setDisabled(False)
         return video_path
 
@@ -43,20 +45,24 @@ class Ui_YolactWindow(QMainWindow):
         if self.checkBox.isChecked():
             input_image, _ = QFileDialog.getOpenFileName(self, 'Choose an input image file', '', 'Image files | (*.jpg *.png);')
             url_input = QUrl.fromLocalFile(input_image)
-            print("Selected input image: ", url_input.fileName())
+            print("Input image: ", url_input.fileName())
             self.imagepath_label.setText("Image: " + os.path.basename(input_image))
             # TODO. copy selected file to D:/yolact and get only short path in D:/yolact directory e.f. data/video.avi
-            self.input_image = "1_2844.jpg"
-            self.output_image = "1_2844_output.jpg"
+            shutil.copy(input_image, "D:/yolact/data/{}".format(os.path.basename(input_image)))
+            self.input_image = "data/" + os.path.basename(input_image)
+            self.output_image = "data/output/" + os.path.basename(input_image).split(".")[0] + "_output." + os.path.basename(input_image).split(".")[1]
             self.segmentation.setDisabled(False)
             return input_image
         else:
             images_input_path = QFileDialog.getExistingDirectory(self, 'Choose an input folder')
             url_input = QUrl.fromLocalFile(images_input_path)
-            print("Selected input images: ", url_input.fileName())
+            print("Input images: ", url_input.fileName())
             self.imagepath_label.setText("Images: " + os.path.basename(images_input_path))
-            self.images_input_path = "data/JPEGImages"
-            self.images_output_path = "data/output"
+            shutil.copytree(images_input_path, "D:/yolact/data/{}".format(os.path.basename(images_input_path)))
+            output_path = os.path.join("D:/yolact/data/output", os.path.basename(images_input_path))
+            os.makedirs(output_path, exist_ok=True)
+            self.images_input_path = "data/" + os.path.basename(images_input_path)
+            self.images_output_path = "data/output/" + os.path.basename(output_path)
             self.segmentation.setDisabled(False)
             return images_input_path
 
@@ -66,7 +72,6 @@ class Ui_YolactWindow(QMainWindow):
             topk = int(self.topk.text())
             if self.video and self.video_multiframe.text():
                 video_multiframe = int(self.video_multiframe.text())
-                print("Video segmentation")
                 yolact_video_segmentation(self.video, self.video_output, self.model, score_threshold, topk, video_multiframe)
             elif self.input_image and self.imagepath_label.text():
                 yolact_single_image_segmentation(self.input_image, self.output_image, self.model, score_threshold, topk)
@@ -78,7 +83,6 @@ class Ui_YolactWindow(QMainWindow):
             QMessageBox.warning(self, 'Warning', 'Model or data not specified', QMessageBox.Ok)
 
     def radio_images_clicked(self):
-        print("Radio images")
         self.video_multiframe_label.hide()
         self.video_multiframe.hide()
         self.upload_video_button.hide()
@@ -89,7 +93,6 @@ class Ui_YolactWindow(QMainWindow):
         self.imagepath_label.show()
 
     def radio_video_clicked(self):
-        print("Radio video")
         self.checkBox.hide()
         self.upload_images.hide()
         self.imagepath_label.hide()
