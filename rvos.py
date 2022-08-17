@@ -13,7 +13,7 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QLabel, QPushButton, QRadioButton, QMenuBar, QMenu, QMainWindow, QFileDialog, QMessageBox
 
-from gui.gui_utils import rvos_one_shot_segmentation, rvos_zero_shot_segmentation
+from gui_utils import rvos_one_shot_segmentation, rvos_zero_shot_segmentation
 
 
 class Ui_RvosWindow(QMainWindow):
@@ -57,7 +57,7 @@ class Ui_RvosWindow(QMainWindow):
 
     def rvos_segmentation(self):
         if self.radio_oneshot.isChecked() and self.model_name and self.frames_path and self.mask_path:
-            rvos_one_shot_segmentation(self.model_name, self.frames_path, self.init_mask_label)
+            rvos_one_shot_segmentation(self.model_name, self.frames_path, self.mask_path)
         elif self.radio_zeroshot.isChecked() and self.model_name and self.frames_label:
             rvos_zero_shot_segmentation(self.model_name, self.frames_path)
         else:

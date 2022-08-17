@@ -56,11 +56,41 @@ def yolact_images_segmentation(images_input_path, images_output_path, model, sco
     return ret_code
 
 
-def rvos_one_shot_segmentation(model_name, frames_path, init_mask_label):
+def rvos_one_shot_segmentation(model_name, frames_path, init_mask_path):
     print("One shot segmentation")
-    pass
+    results_path = os.path.join('./results', model_name, os.path.basename(frames_path))
+    if not os.path.isdir(results_path):
+        os.makedirs(results_path)
+    command = r'conda activate rvos && ' \
+              r'python demo.py -model_name {} -frames_path {} ' \
+              r'-mask_path {} --overlay_masks -gpu_id 0 -results_path {} '\
+        .format(model_name, frames_path, init_mask_path, os.path.abspath(results_path))
+    print("Command: ", command)
+
+    p = subprocess.Popen(["start", "cmd", "/k", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         shell=True, cwd=r'D:\RVOS_WINDOWS\rvos\src')
+    ret_code = p.wait()
+    print("ret_code ", ret_code)
+    if ret_code != 0:
+        print("Something went wrong...")
+    return ret_code
 
 
 def rvos_zero_shot_segmentation(model_name, frames_path):
     print("Zero shot segmentation")
-    pass
+    results_path = os.path.join('./results', model_name, os.path.basename(frames_path))
+    if not os.path.isdir(results_path):
+        os.makedirs(results_path)
+    # python demo.py -model_name zero-shot-model-davis -frames_path ../../databases/DAVIS2017/JPEGImages/480p/icsi12 --overlay_masks -gpu_id 1 --zero_shot
+    command = r'conda activate rvos && ' \
+              r'python demo.py -model_name {} -frames_path {} ' \
+              r'--overlay_masks -gpu_id 0 -results_path {} --zero_shot'\
+        .format(model_name, frames_path, os.path.abspath(results_path))
+    print("Command: ", command)
+    p = subprocess.Popen(["start", "cmd", "/k", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         shell=True, cwd=r'D:\RVOS_WINDOWS\rvos\src')
+    ret_code = p.wait()
+    print("ret_code ", ret_code)
+    if ret_code != 0:
+        print("Something went wrong...")
+    return ret_code
