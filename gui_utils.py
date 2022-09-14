@@ -1,6 +1,7 @@
 import os
 import subprocess
-
+from os import path
+import shutil
 
 def yolact_video_segmentation(video, video_output, model, score_threshold, topk, video_multiframe):
     print("YOLACT video segmentation")
@@ -17,6 +18,18 @@ def yolact_video_segmentation(video, video_output, model, score_threshold, topk,
     print("ret_code ", ret_code)
     if ret_code != 0:
         print("Something went wrong...")
+
+    # abspath = f"D:/yolact/{video_output}"
+    # cmd = "copy {} ./results/{}".format(abspath, os.path.basename(abspath))
+    # copy_file = subprocess.Popen(["start", "cmd", "/k", cmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    #                  shell=True, cwd=os.getcwd())
+    # ret_code_copy = copy_file.wait()
+    # print("ret_code_copy ", ret_code_copy)
+
+    # abspath = f"D:/yolact/{video_output}"
+    # if path.exists(abspath):
+    #     print("jest")
+    #     shutil.copy(abspath, "./results/{}".format(os.path.basename(abspath)))
     return ret_code
 
 
@@ -61,18 +74,19 @@ def rvos_one_shot_segmentation(model_name, frames_path, init_mask_path):
     results_path = os.path.join('./results', model_name, os.path.basename(frames_path))
     if not os.path.isdir(results_path):
         os.makedirs(results_path)
+    # python demo.py -model_name one-shot-model-davis -frames_path .../gui/icsi12 -mask_path .../gui/icsi12_annotations/00000.png --overlay_masks -gpu_id 0 -results_path ...\gui\results\one-shot-model-davis_prev_mask_188epoch_batch4_newmasks_2\icsi12
     command = r'conda activate rvos && ' \
               r'python demo.py -model_name {} -frames_path {} ' \
               r'-mask_path {} --overlay_masks -gpu_id 0 -results_path {} '\
         .format(model_name, frames_path, init_mask_path, os.path.abspath(results_path))
     print("Command: ", command)
-
     p = subprocess.Popen(["start", "cmd", "/k", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          shell=True, cwd=r'D:\RVOS_WINDOWS\rvos\src')
     ret_code = p.wait()
     print("ret_code ", ret_code)
     if ret_code != 0:
         print("Something went wrong...")
+
     return ret_code
 
 

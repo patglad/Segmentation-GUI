@@ -70,7 +70,7 @@ class Ui_YolactWindow(QMainWindow):
             self.segmentation.setDisabled(False)
             return images_input_path
 
-    def start_segmentation(self):
+    def yolact_segmentation(self):
         if self.model and self.score_threshold.text() and self.topk.text():
             score_threshold = float(self.score_threshold.text())
             topk = int(self.topk.text())
@@ -82,9 +82,9 @@ class Ui_YolactWindow(QMainWindow):
             elif self.images_input_path and self.imagepath_label.text():
                 yolact_images_segmentation(self.images_input_path, self.images_output_path, self.model, score_threshold, topk)
             else:
-                QMessageBox.warning(self, 'Warning', 'Model or data not specified', QMessageBox.Ok)
+                QMessageBox.warning(self, 'Warning', 'Please provide all parameters', QMessageBox.Ok)
         else:
-            QMessageBox.warning(self, 'Warning', 'Model or data not specified', QMessageBox.Ok)
+            QMessageBox.warning(self, 'Warning', 'Please provide all parameters', QMessageBox.Ok)
 
     def radio_images_clicked(self):
         self.video_multiframe_label.hide()
@@ -219,7 +219,7 @@ class Ui_YolactWindow(QMainWindow):
         self.segmentation = QPushButton("Start segmentation", self.centralwidget)
         self.segmentation.setGeometry(350, 150, 250, 41)
         self.segmentation.setObjectName("segmentation")
-        self.segmentation.clicked.connect(self.start_segmentation)
+        self.segmentation.clicked.connect(self.yolact_segmentation)
         self.segmentation.setDisabled(True)
 
         # Visualisation
@@ -229,15 +229,15 @@ class Ui_YolactWindow(QMainWindow):
         self.visualisation.clicked.connect(self.see_film)
 
         # Menu bar
-        self.menubar = QMenuBar(YolactWindow)
-        self.menubar.setGeometry(0, 0, 711, 21)
-        self.menubar.setObjectName("menubar")
-        YolactWindow.setMenuBar(self.menubar)
+        # self.menubar = QMenuBar(YolactWindow)
+        # self.menubar.setGeometry(0, 0, 711, 21)
+        # self.menubar.setObjectName("menubar")
+        # YolactWindow.setMenuBar(self.menubar)
 
         # Menu help
-        self.menuHelp = QMenu("Help", self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
-        self.menubar.addAction(self.menuHelp.menuAction())
+        # self.menuHelp = QMenu("Help", self.menubar)
+        # self.menuHelp.setObjectName("menuHelp")
+        # self.menubar.addAction(self.menuHelp.menuAction())
 
         YolactWindow.setCentralWidget(self.centralwidget)
 

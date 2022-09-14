@@ -61,7 +61,7 @@ class Ui_RvosWindow(QMainWindow):
         elif self.radio_zeroshot.isChecked() and self.model_name and self.frames_label:
             rvos_zero_shot_segmentation(self.model_name, self.frames_path)
         else:
-            QMessageBox.warning(self, 'Warning', 'Model or data not specified', QMessageBox.Ok)
+            QMessageBox.warning(self, 'Warning', 'Please provide all parameters', QMessageBox.Ok)
 
     def setupUi(self, RvosWindow):
         self.model_name = ""
@@ -140,15 +140,15 @@ class Ui_RvosWindow(QMainWindow):
         self.visualisation.clicked.connect(self.see_film)
 
         # Menu bar
-        self.menubar = QMenuBar(RvosWindow)
-        self.menubar.setGeometry(0, 0, 677, 21)
-        self.menubar.setObjectName("menubar")
+        # self.menubar = QMenuBar(RvosWindow)
+        # self.menubar.setGeometry(0, 0, 677, 21)
+        # self.menubar.setObjectName("menubar")
 
         # Menu help
-        self.menuHelp = QMenu("Help", self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
-        self.menubar.addAction(self.menuHelp.menuAction())
-        RvosWindow.setMenuBar(self.menubar)
+        # self.menuHelp = QMenu("Help", self.menubar)
+        # self.menuHelp.setObjectName("menuHelp")
+        # self.menubar.addAction(self.menuHelp.menuAction())
+        # RvosWindow.setMenuBar(self.menubar)
 
         RvosWindow.setCentralWidget(self.centralwidget)
 
